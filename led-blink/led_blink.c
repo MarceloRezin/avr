@@ -8,12 +8,15 @@
 
 int main() {
 
-	DDRB	= 0b00010000;
-	while(1) {
-		PORTB	= 0b00010000;
+	DDRB	|= (1<<4);
+	PORTB	&= ~(1<<4);
 
-		_delay_ms(500);
-		PORTB	= 0b00000000;
+	while(1) {
+		PORTB	|= (1<<4);
+
+		_delay_ms(100);
+
+		PORTB	&= ~(1<<4);
 
 		_delay_ms(500);
 	}
