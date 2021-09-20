@@ -11,20 +11,20 @@
 
 .cseg
 .org	0x00; Incia do endereço zero o vetor de interrupções
-	rjmp SETUP		; RESET -> vai para o início do código
+	rjmp	SETUP	; RESET -> vai para o início do código
 	reti			; INT0
 	reti			; INT1
 	reti			; TIMER1 CAPT
 	reti			; TIMER1 COMPA
 	reti			; TIMER1 OVF
-	rjmp T0OVINT	; TIMER0 OVF
+	reti 			; TIMER0 OVF
 	reti			; USART0, RX
 	reti			; USART0, UDRE
 	reti			; USART0, TX
 	reti			; ANALOG COMP
 	reti			; PCINT0
 	reti			; TIMER1 COMPB
-	reti			; TIMER0 COMPA
+	rjmp	CAINT	; TIMER0 COMPA
 	reti			; TIMER0 COMPB
 	reti			; USI START
 	reti			; USI OVERFLOW
@@ -37,29 +37,46 @@
 SETUP:
 	cli ; desabilita
 
-	;habilita a interrupção por overvflow do timmer 0
-	ldi	r16, (1<<TOIE0)
-	out	TIMSK, r16
+	;habilita a interrupção por comparador A
+	ldi		r16, 	(1<<OCIE0A)
+	out		TIMSK, 	r16
 
-	; 1mhz com prescaler de 1024
-	; CS02:0 - Clock select: 101 = 1024 prescaler
-	ldi	r16, (1<<CS02) | (1<<CS00)
+	; CS02:0 - Clock select: 001 = no prescaling
+	ldi	r16, (1<<CS00)
 	out TCCR0B, r16
+
+	;FA = 250, para 4 interrupções = 1ms 
+	ldi r16,	0xFA
+	out OCR0A,	r16
+
+	;Controle de tempo
+	ldi		r18, 0xC8	; 4x = 1ms -> 200, 50ms
+	ldi		r19, 0		; Conta as interrupt
+	ldi		r20, 0x14	; 1 = 50ms -> 10, 500ms
+	ldi		r21, 0		; Conta os ms para o necessário
 
 	sei ; habilita interrupções globais
 
 	ldi		r16, (1<<PINB1)
 	out		DDRB, r16	; PB1 out
-	out		PORTB, r16	; PB1 
+	out		PORTB, r16	; PB1
 
 	rjmp LOOP
 
 LOOP:
-	nop
+	cpse	r20, r21	;ignora enquanto não deu o tempo estimado
 	rjmp	LOOP
 
-T0OVINT:
+
+	ldi		r21, 0
 	eor		r17, r16 ; inverte o bit do PB1
 	out		PORTB, r17
-	reti
+	rjmp	LOOP
 
+CAINT:
+	inc		r19
+	cpse	r18, r19 ; Se contou as int, tem que zerar
+	reti
+	ldi		r19, 0
+	inc		r21
+	reti
