@@ -1,7 +1,7 @@
 ;	Data:	06/09/2021
 ;	Autor:	Marcelo Rezin
 
-;	Led blink - Usa o overflow do timmer 0 para piscar o led, no PB1, pin13
+;	Led blink - Usa o comparador A do timmer 0 para piscar o led, no PB1, pin13
 ;	Assembler: gavrasm - http://www.avr-asm-tutorial.net/gavrasm/index_en.html 
 ;	Clock: 1MHZ
 
