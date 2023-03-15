@@ -11,7 +11,7 @@ reti			; USART0, TX
 reti			; ANALOG COMP
 reti			; PCINT0
 reti			; TIMER1 COMPB
-rjmp	CAINT	; TIMER0 COMPA
+reti	     	; TIMER0 COMPA
 reti			; TIMER0 COMPB
 reti			; USI START
 reti			; USI OVERFLOW

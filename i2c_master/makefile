@@ -1,6 +1,6 @@
 # Gera o hex que será gravado no mcu.
 
-PROJ=i2c_master
+PROJ=i2c_test
 
 MCU_AVRDUDE=t2313
 
