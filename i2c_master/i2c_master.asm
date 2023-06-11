@@ -1,8 +1,10 @@
 ; Rotinas para comunicação I2C utilizando o recurso nativo do MCU - USI
 ;Recebe e devolve os dados via R17
 
-.set SLAVE_ADDRESS_READ = 0b11010001
-.set SLAVE_ADDRESS_WRITE = 0b11010000
+;.set SLAVE_ADDRESS_READ = 0b11010001
+.set SLAVE_ADDRESS_READ = 0b10101010
+; .set SLAVE_ADDRESS_WRITE = 0b11010000
+.set SLAVE_ADDRESS_WRITE = 0b10010000
 
 
 
@@ -15,68 +17,130 @@
 ;pulsa uma vez para receber o ack
 ;receber outos bits
 
-DATA_READ_1_BYTE:
+DATA_WRITE_1_BYTE:
 
 	;Carrega USIDR
-	ldi r16, SLAVE_ADDRESS_READ
-	out USIDR, r16
+	ldi r17, 0
+	out USIDR, r17
 
-	;Start condition
-	cbi	PORTB, PINB5
+
+	ldi r18, SLAVE_ADDRESS_WRITE
+	ldi r19, (1<<USIWM1) | (1<<USITC) ; so inverte o SCL
+	ldi r20, (1<<USIWM1) | (1<<USICLK) ; Shift no SDA
+	ldi r21, (1<<USISIF)
+
+	; abaixa SDA e faz shift, como ta tudo zerado, não tem problema
+	out USICR, r20
 	rcall DELAY_5US
-	cbi PORTB, PINB7 ;Precisa? Usa o usitc abaixo para abaixar
 	rcall DELAY_5US
 
-	ldi r16, (1<<USIWM1) | (1<<USITC)
-	ldi r17, (1<<USIWM1) | (1<<USITC) | (1<<USICLK)
-
-	;SDA espelha o MSB de USIDR
-
-	out USICR, r16 ;MSB
-	; rcall DELAY_5US
-	out USICR, r17
-	; rcall DELAY_5US
-
-	out USICR, r16
-	; rcall DELAY_5US
-	out USICR, r17
-	; rcall DELAY_5US
-
-	out USICR, r16
-	;rcall DELAY_5US
-	out USICR, r17
-	;rcall DELAY_5US
-
-	out USICR, r16
-	;rcall DELAY_5US
-	out USICR, r17
-	;rcall DELAY_5US
-
-	out USICR, r16
-	;rcall DELAY_5US
-	out USICR, r17
-	;rcall DELAY_5US
-
-	out USICR, r16
-	;rcall DELAY_5US
-	out USICR, r17
-	;rcall DELAY_5US
-
-	out USICR, r16
-	;rcall DELAY_5US
-	out USICR, r17
-	;rcall DELAY_5US
-
-	out USICR, r16 ;LSB
-	;rcall DELAY_5US
-	out USICR, r17
-	;rcall DELAY_5US
-
-	ldi r16, 0
-	out USICR, r16
-
-	;Falta entender porque o tempo está errado. Clock baixo?
-	;Falta ack
-	;Testar usando o arduino como slave
+	out USICR, r19 ;MSB  _
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USIDR, r18 ;S
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USISR, r21 ; Limpa start condition
+	out USICR, r19 ; -
 	
+	rcall DELAY_5US
+	rcall DELAY_5US
+	; cbi	PORTB, PINB7
+	out USICR, r19 ; _
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r20 ;
+	rcall DELAY_5US
+	rcall DELAY_5US 
+	out USICR, r19 ; -
+
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; _
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r20 ; 
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; -
+
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; _
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r20 ; 
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; -
+
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; _
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r20 ; 
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; -
+
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; _
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r20 ; 
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; -
+
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; _
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r20 ; 
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; -
+
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; _
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r20 ; 
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ;LSB - 
+
+	rcall DELAY_5US
+	rcall DELAY_5US
+	out USICR, r19 ; _
+	rcall DELAY_5US
+	rcall DELAY_5US
+
+	ldi r19, 0
+	out USICR, r19
+
+	sbi PORTB, PINB7
+	sbi PORTB, PINB5
+
+	
+	;TODO ACK
+
 	ret

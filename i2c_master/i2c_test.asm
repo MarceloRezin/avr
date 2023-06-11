@@ -16,19 +16,19 @@
 SETUP:
 	cli ; desabilita interrupções globais
 
-	ldi r17, 0
-	ldi r16, 0b10000000
-	out CLKPR, r16
+	;ldi r17, 0
+	;ldi r16, 0b10000000
+	;out CLKPR, r16
 
-	out CLKPR, r17
+	;out CLKPR, r17
 
-	nop
-	nop
-	nop
+	;nop
+	;nop
+	;nop
 
 	; CS02:0 - Clock select: 001 = no prescaling
-	;ldi	r16, (1<<CS00)
-	;out TCCR0B, r16
+	ldi	r16, (1<<CS00)
+	out TCCR0B, r16
 
 	;Define o endereço da pilha
 	ldi r16,LOW(RAMEND) ; Load the last SRAM address to R16
@@ -43,11 +43,24 @@ SETUP:
 
 	rjmp MAIN
 
-MAIN:
-	rcall DATA_READ_1_BYTE
+MAIN:	
+	rcall DATA_WRITE_1_BYTE
 
-	sbi	PORTB, PINB5
-	sbi PORTB, PINB7
+	
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
+	rcall DELAY_5US
 
 	rjmp MAIN
 
